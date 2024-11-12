@@ -48,3 +48,5 @@ I won’t add unnecessary or bloated features to the plugin. If there are no bug
 If you enjoy using **Lockers**, consider leaving a donation, rating, or starring the repository. Your support is always appreciated!
 
 For bugs or issues, please use the discussion forum or PM me directly.
+
+[Lockers Plugin on SpigotMC](https://www.spigotmc.org/resources/lockers-effortless-backup-armor-storage-swap-plug-and-play.120722/)
