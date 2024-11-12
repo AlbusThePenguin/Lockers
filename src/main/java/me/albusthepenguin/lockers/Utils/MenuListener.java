@@ -31,6 +31,8 @@ public class MenuListener implements Listener {
         this.lockers = lockers;
     }
 
+    /**/
+
     @EventHandler
     public void onMenuClick(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof Menu menu) {
