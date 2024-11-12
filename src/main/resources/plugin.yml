@@ -1,0 +1,4 @@
+name: Lockers
+version: '1.0.0'
+main: me.albusthepenguin.lockers.Lockers
+api-version: '1.20'
