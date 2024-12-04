@@ -1,12 +1,12 @@
 /*
  * This file is part of Lockers.
  *
- * Lockers is free software: you can redistribute it and/or modify
+ * Lockers is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Lockers is distributed in the hope that it will be useful,
+ * Lockers are distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
@@ -17,7 +17,7 @@
 package me.albusthepenguin.lockers.Commands;
 
 import me.albusthepenguin.lockers.Lockers;
-import me.albusthepenguin.lockers.Utils.MinecraftSubCommand;
+import me.albusthepenguin.lockers.Utils.CMD.MinecraftSubCommand;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 

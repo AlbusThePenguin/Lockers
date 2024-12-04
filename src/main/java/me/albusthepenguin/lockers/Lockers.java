@@ -1,12 +1,12 @@
 /*
  * This file is part of Lockers.
  *
- * Lockers is free software: you can redistribute it and/or modify
+ * Lockers is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Lockers is distributed in the hope that it will be useful,
+ * Lockers are distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
@@ -22,10 +22,10 @@ import lombok.Getter;
 import me.albusthepenguin.lockers.Commands.LockerCommand;
 import me.albusthepenguin.lockers.Configs.Configuration;
 import me.albusthepenguin.lockers.Locker.LockerHandler;
-import me.albusthepenguin.lockers.Locker.LockerListener;
+import me.albusthepenguin.lockers.Listener.LockerListener;
 import me.albusthepenguin.lockers.Utils.DBConnection;
-import me.albusthepenguin.lockers.Utils.MenuListener;
-import me.albusthepenguin.lockers.Utils.MenuUtilities;
+import me.albusthepenguin.lockers.Utils.Menu.MenuListener;
+import me.albusthepenguin.lockers.Utils.Menu.MenuUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
