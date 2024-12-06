@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -58,18 +59,27 @@ public class LockerHandler {
 
         this.namespacedKey = new NamespacedKey(lockers, "clicked");
 
-        String query = "CREATE TABLE IF NOT EXISTS " + this.table + " ("
+        try (Connection connection = dbConnection.get();
+             Statement statement = connection.createStatement()) {
+            statement.execute(this.getTableQuery());
+        } catch (SQLException e) {
+            throw new RuntimeException("Could not generate the tables: " + e.getSQLState() + ": " + e.getMessage());
+        }
+    }
+
+    @Nonnull
+    private String getTableQuery() {
+        return "CREATE TABLE IF NOT EXISTS " + this.table + " ("
                 + "`uuid` VARCHAR(36) NOT NULL,"
                 + "`page` INT NOT NULL,"
                 + "`locker` BLOB NOT NULL,"
                 + "PRIMARY KEY (`uuid`, `page`)"
                 + ");";
+    }
 
-        try (Connection connection = dbConnection.get();
-             Statement statement = connection.createStatement()) {
-            statement.execute(query);
-        } catch (SQLException e) {
-            throw new RuntimeException("Could not generate the tables: " + e.getSQLState() + ": " + e.getMessage());
+    public void update(UUID uuid, Map<Integer, ItemStack[]> pages) {
+        for (Map.Entry<Integer, ItemStack[]> entry : pages.entrySet()) {
+            playerLockers.put(new LockerKey(uuid, entry.getKey()), entry.getValue());
         }
     }
 
@@ -101,17 +111,12 @@ public class LockerHandler {
         }
     }
 
-    public void update(UUID uuid, Map<Integer, ItemStack[]> pages) {
-        for (Map.Entry<Integer, ItemStack[]> entry : pages.entrySet()) {
-            playerLockers.put(new LockerKey(uuid, entry.getKey()), entry.getValue());
-        }
-    }
-
     public void saveAll(UUID uuid) {
         if (!playerLockers.containsKey(new LockerKey(uuid, 0))) return;
 
         String query = dbConnection.isUsingMySQL() ?
-                "INSERT INTO " + this.table + " (`uuid`, `page`, `locker`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `locker` = VALUES(`locker`)" :
+                "INSERT INTO " + this.table + " (`uuid`, `page`, `locker`) VALUES (?, ?, ?) "
+                        + "ON DUPLICATE KEY UPDATE `locker` = VALUES(`locker`)" :
                 "INSERT OR REPLACE INTO " + this.table + " (`uuid`, `page`, `locker`) VALUES (?, ?, ?)";
 
         try (Connection connection = dbConnection.get();
@@ -128,7 +133,6 @@ public class LockerHandler {
             }
 
             statement.executeBatch();
-
             playerLockers.clear();
 
         } catch (SQLException e) {

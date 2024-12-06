@@ -36,44 +36,47 @@ public class DBConnection {
     private boolean usingMySQL = false;
 
     public DBConnection(Plugin plugin, @NonNull ConfigurationSection section) {
-        String type = section.getString("type"); // Added to read database type
-        String databasePort = section.getString("port");
-        String databaseAddress = section.getString("address");
-        String databaseName = section.getString("database");
-        String databaseUsername = section.getString("username");
-        String databasePassword = section.getString("password");
+        String type = section.getString("type", "SQLite"); // Database type (MySQL or SQLite)
 
-        this.db_prefix = section.getString("prefix");
+        String databaseName = section.getString("database", "lockers");
 
-        if (this.db_prefix == null) {
-            throw new RuntimeException("Prefix cannot be null.");
-        }
+        this.db_prefix = section.getString("prefix", "lr_");
 
         HikariConfig config = new HikariConfig();
-
         String url;
-        if ("MySQL".equalsIgnoreCase(type)) {
-            url = "jdbc:mysql://" + databaseAddress + ":" + databasePort + "/" + databaseName;
-            config.setUsername(databaseUsername);
-            config.setPassword(databasePassword);
-            this.usingMySQL = true;
-        } else if ("SQLite".equalsIgnoreCase(type)) {
-            url = "jdbc:sqlite:" + new File(plugin.getDataFolder(), "storage.db").getAbsolutePath();
-        } else {
-            throw new RuntimeException("Unsupported database type: " + type);
+
+        switch (type.toUpperCase()) {
+            case "MYSQL":
+                url = "jdbc:mysql://" + section.getString("address", "localhost") + "/" + databaseName + section.getString("properties", "?useSSL=false&requireSSL=false&verifyServerCertificate=false");
+                config.setUsername(section.getString("username", "root"));
+                config.setPassword(section.getString("password", ""));
+                this.usingMySQL = true;
+                break;
+            case "SQLITE":
+                url = "jdbc:sqlite:" + new File(plugin.getDataFolder(), databaseName + ".db").getAbsolutePath();
+                break;
+
+            default:
+                throw new RuntimeException("Unsupported database type: " + type);
         }
-        config.setJdbcUrl(url);
 
         config.setJdbcUrl(url);
 
-        // Shared HikariCP settings for both MySQL and SQLite
-        config.setMinimumIdle(5);
-        config.setMaximumPoolSize(10);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        configureHikariSettings(config, section);
 
         this.hikariDataSource = new HikariDataSource(config);
+    }
+
+    private void configureHikariSettings(HikariConfig config, ConfigurationSection section) {
+        config.setMaximumPoolSize(section.getInt("pool-settings.maximum-pool-size", 10));
+        config.setMinimumIdle(section.getInt("pool-settings.maximum-idle", 10));
+        config.setMaxLifetime(section.getLong("pool-settings.maximum-lifetime", 1800000));
+        config.setIdleTimeout(section.getLong("pool-settings.keeplive-time", 0));
+        config.setConnectionTimeout(section.getLong("pool-settings.connection-timeout", 5000));
+
+        config.addDataSourceProperty("cachePrepStmts", section.getBoolean("statement-cache-settings.cachePrepStmts", true));
+        config.addDataSourceProperty("prepStmtCacheSize", section.getInt("statement-cache-settings.prepStmtCacheSize", 250));
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", section.getInt("statement-cache-settings.prepStmtCacheSqlLimit", 2048));
     }
 
     public Connection get() throws SQLException {

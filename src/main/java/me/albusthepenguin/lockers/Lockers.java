@@ -16,6 +16,7 @@
  */
 package me.albusthepenguin.lockers;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
@@ -54,7 +55,7 @@ public final class Lockers extends JavaPlugin {
 
         this.configuration = new Configuration(this);
 
-        ConfigurationSection dbSection = this.configuration.getYamlConfiguration().getConfigurationSection("Database");
+        ConfigurationSection dbSection = this.configuration.getYamlConfiguration().getConfigurationSection("storage");
         if(dbSection == null) {
             throw new IllegalArgumentException("Could not establish database connection because 'Database' section in config.yml is null.");
         }
@@ -68,6 +69,7 @@ public final class Lockers extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MenuListener(this), this);
         Bukkit.getPluginManager().registerEvents(new LockerListener(this, this.lockerHandler), this);
 
+        new Metrics(this, 24085);
     }
 
     @Override

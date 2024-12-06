@@ -62,7 +62,8 @@ public class LockerListener implements Listener {
             return;
         }
 
-        if(player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+        if (player.isSneaking() &&
+                (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             this.lockerHandler.getShift().swap(player);
         }
     }

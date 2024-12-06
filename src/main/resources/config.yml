@@ -1,11 +1,40 @@
-Database:
-  #Available options are 'MySQL' and 'SQLite'
-  type: 'SQLite'
+storage:
+  # Supported database types: 'MySQL' and 'SQLite'.
+  # Use 'MySQL' or 'SQLite' for server-based databases, or 'SQLite' for a lightweight file-based database.
+  type: SQLite
+
+  # The address of the database server.
   address: localhost
-  port: 3306
+
+  # The name of the database to connect to or create.
   database: test
+
+  # The username for the database connection.
   username: root
+
+  # The password for the database connection.
   password: ''
+
+  # SSL options (turned off by default)
+  properties: '?useSSL=false&requireSSL=false&verifyServerCertificate=false'
+
+  # Connection pool settings (for MySQL only).
+  pool-settings:
+    maximum-pool-size: 10
+    maximum-idle: 10
+    maximum-lifetime: 1800000
+    keeplive-time: 0
+    connection-timeout: 5000
+
+  # Statement cache properties (optional)
+  # These settings are used to optimize statement preparation and caching.
+  # These should be specified for MySQL to improve performance.
+  statement-cache-settings:
+    cachePrepStmts: true
+    prepStmtCacheSize: 250
+    prepStmtCacheSqlLimit: 2048
+
+  # A prefix used for table names in the database.
   prefix: 'lr_'
 
 #Allow shift right-click block or air to switch (page 1 row 1 slot) armor slot with the current.
